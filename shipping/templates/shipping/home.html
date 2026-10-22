@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shipping Box Recommender</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; color: #222; }
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.1rem; margin-top: 2rem; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { text-align: left; padding: .4rem .6rem; border-bottom: 1px solid #ddd; }
+    input[type=number] { width: 5rem; }
+    button { margin-top: 1rem; padding: .5rem 1.2rem; cursor: pointer; }
+    .result { padding: 1rem; border-radius: 6px; margin: 1rem 0; }
+    .ok { background: #e8f5e9; border: 1px solid #81c784; }
+    .bad { background: #fdecea; border: 1px solid #e57373; }
+    .muted { color: #666; font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <h1>Shipping Box Recommender</h1>
+
+  {% if error %}
+    <div class="result bad">{{ error }}</div>
+  {% elif order %}
+    {% with box=order.recommended_box %}
+      {% if box %}
+        <div class="result ok">
+          <strong>Order #{{ order.pk }}: use the {{ box.name }} box</strong><br>
+          {{ box.length }} × {{ box.width }} × {{ box.height }} cm, holds up to {{ box.max_weight }} kg, costs ${{ box.cost }}
+        </div>
+      {% else %}
+        <div class="result bad"><strong>Order #{{ order.pk }}:</strong> no available box can fit this order.</div>
+      {% endif %}
+    {% endwith %}
+  {% endif %}
+
+  <h2>Place an order</h2>
+  {% if products %}
+    <form method="post">
+      {% csrf_token %}
+      <table>
+        <tr><th>Product</th><th>Size (cm)</th><th>Weight (kg)</th><th>Quantity</th></tr>
+        {% for product in products %}
+          <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.length }} × {{ product.width }} × {{ product.height }}</td>
+            <td>{{ product.weight }}</td>
+            <td><input type="number" name="qty_{{ product.pk }}" min="0" value="{{ product.qty|default:0 }}"></td>
+          </tr>
+        {% endfor %}
+      </table>
+      <button type="submit">Recommend box</button>
+    </form>
+  {% else %}
+    <p>No products yet. Add some in the <a href="/admin/">admin</a> or run <code>python manage.py loaddata sample_data</code>.</p>
+  {% endif %}
+
+  <h2>Available boxes</h2>
+  {% if boxes %}
+    <table>
+      <tr><th>Box</th><th>Inside size (cm)</th><th>Max weight (kg)</th><th>Cost</th></tr>
+      {% for box in boxes %}
+        <tr><td>{{ box.name }}</td><td>{{ box.length }} × {{ box.width }} × {{ box.height }}</td><td>{{ box.max_weight }}</td><td>${{ box.cost }}</td></tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No boxes yet. Add some in the <a href="/admin/">admin</a>.</p>
+  {% endif %}
+
+  <p class="muted">Manage products and boxes in the <a href="/admin/">admin</a>. JSON API: <code>POST /api/orders/</code>.</p>
+</body>
+</html>

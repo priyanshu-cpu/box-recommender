@@ -1,0 +1,8 @@
+[
+  {"model": "shipping.box", "pk": 1, "fields": {"name": "Small", "length": "20.00", "width": "15.00", "height": "10.00", "max_weight": "2.00", "cost": "1.00"}},
+  {"model": "shipping.box", "pk": 2, "fields": {"name": "Medium", "length": "40.00", "width": "30.00", "height": "20.00", "max_weight": "10.00", "cost": "2.50"}},
+  {"model": "shipping.box", "pk": 3, "fields": {"name": "Large", "length": "60.00", "width": "40.00", "height": "40.00", "max_weight": "25.00", "cost": "5.00"}},
+  {"model": "shipping.product", "pk": 1, "fields": {"name": "Book", "length": "18.00", "width": "12.00", "height": "3.00", "weight": "0.50"}},
+  {"model": "shipping.product", "pk": 2, "fields": {"name": "Desk Lamp", "length": "35.00", "width": "15.00", "height": "15.00", "weight": "3.00"}},
+  {"model": "shipping.product", "pk": 3, "fields": {"name": "Coffee Mug", "length": "12.00", "width": "9.00", "height": "10.00", "weight": "0.40"}}
+]
